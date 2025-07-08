@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <include resource="org/springframework/boot/logging/logback/base.xml"/>
+    
+    <!-- Silenciar completamente Hibernate -->
+    <logger name="org.hibernate" level="OFF"/>
+    <logger name="org.hibernate.SQL" level="OFF"/>
+    <logger name="org.hibernate.type" level="OFF"/>
+    <logger name="org.hibernate.engine.jdbc" level="OFF"/>
+    <logger name="org.hibernate.type.descriptor.sql" level="OFF"/>
+    
+    <!-- Silenciar el logger específico que muestra las consultas SQL -->
+    <logger name="org.hibernate.engine.jdbc.spi.SqlExceptionHelper" level="OFF"/>
+    
+    <!-- Configuración para la aplicación -->
+    <logger name="com.alura.ProyectoLiteratura" level="INFO"/>
+</configuration>

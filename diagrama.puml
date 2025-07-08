@@ -1,0 +1,176 @@
+@startuml Proyecto Literatura
+
+' Estilo del diagrama
+skinparam classAttributeIconSize 0
+skinparam backgroundColor #FEFEFE
+skinparam classFontColor #333333
+skinparam classFontSize 14
+skinparam classFontStyle bold
+skinparam classBackgroundColor #F8F9FA
+skinparam classBorderColor #DEE2E6
+
+' Entidades principales
+package "Model" {
+  enum Idioma {
+    ESPANOL
+    INGLES
+    FRANCES
+    PORTUGUES
+    --
+    +String codigo
+    +String nombre
+    +fromCodigo(String): Idioma
+    +getCodigo(): String
+    +getNombre(): String
+  }
+
+  class Autor {
+    -Long id
+    -String nombre
+    -Integer fechaNacimiento
+    -Integer fechaMuerte
+    -List<Libro> libros
+    --
+    +Autor()
+    +Autor(String, Integer, Integer)
+    +getters/setters
+    +toString(): String
+  }
+
+  class Libro {
+    -Long id
+    -String titulo
+    -Autor autor
+    -List<Idioma> idiomas
+    -Double numeroDescargas
+    --
+    +Libro()
+    +Libro(String, Autor, List<Idioma>, Double)
+    +getters/setters
+    +toString(): String
+  }
+}
+
+package "Repository" {
+  interface AutorRepository {
+    +findByNombre(String): Optional<Autor>
+    +findAutoresVivosEnAno(int): List<Autor>
+  }
+
+  interface LibroRepository {
+    +findByTitulo(String): Optional<Libro>
+    +findByIdioma(Idioma): List<Libro>
+    +findByAutor(Autor): List<Libro>
+  }
+}
+
+package "Service" {
+  class LiteraturaService {
+    -AutorRepository autorRepository
+    -LibroRepository libroRepository
+    --
+    +buscarLibroPorTitulo(String): void
+    +buscarLibrosPorAutor(String): void
+    +listarLibrosRegistrados(): void
+    +listarAutoresRegistrados(): void
+    +listarAutoresVivosPorAno(int): void
+    +listarLibrosPorIdioma(Idioma): void
+    +mostrarTop5Libros(): void
+  }
+}
+
+package "UI" {
+  class MenuPrincipal {
+    -LiteraturaService literaturaService
+    -Scanner scanner
+    --
+    +mostrarMenu(): void
+    -mostrarCabecera(): void
+    -mostrarOpciones(): void
+    -procesarOpcion(int): void
+    -buscarLibroPorTitulo(): void
+    -buscarLibrosPorAutor(): void
+    -listarLibrosRegistrados(): void
+    -listarAutoresRegistrados(): void
+    -listarAutoresVivosPorAno(): void
+    -mostrarMenuIdiomas(): void
+    -mostrarTop5Libros(): void
+    -mostrarMensajeDespedida(): void
+  }
+}
+
+package "Config" {
+  class DataInitializer {
+    +initData(AutorRepository, LibroRepository): CommandLineRunner
+  }
+}
+
+package "Util" {
+  class ConsoleColors {
+    +{static} String RESET
+    +{static} String BLACK
+    +{static} String RED
+    +{static} String GREEN
+    +{static} String YELLOW
+    +{static} String BLUE
+    +{static} String PURPLE
+    +{static} String CYAN
+    +{static} String WHITE
+    +{static} String BLACK_BOLD
+    +{static} String RED_BOLD
+    +{static} String GREEN_BOLD
+    +{static} String YELLOW_BOLD
+    +{static} String BLUE_BOLD
+    +{static} String PURPLE_BOLD
+    +{static} String CYAN_BOLD
+    +{static} String WHITE_BOLD
+  }
+
+  class LoadingBar {
+    +{static} display(String, int): void
+    +{static} displaySpinner(String, int): void
+  }
+
+  class ErrorHandler {
+    +{static} execute(Runnable, String): void
+    +{static} showError(String, Exception): void
+  }
+}
+
+' Relaciones
+Autor "1" *-- "0..*" Libro : contiene >
+Libro "0..*" o-- "1..*" Idioma : tiene >
+
+AutorRepository ..> Autor : usa >
+LibroRepository ..> Libro : usa >
+LibroRepository ..> Autor : usa >
+LibroRepository ..> Idioma : usa >
+
+LiteraturaService --> AutorRepository : usa >
+LiteraturaService --> LibroRepository : usa >
+LiteraturaService ..> Autor : usa >
+LiteraturaService ..> Libro : usa >
+LiteraturaService ..> Idioma : usa >
+
+MenuPrincipal --> LiteraturaService : usa >
+MenuPrincipal ..> Idioma : usa >
+MenuPrincipal ..> ConsoleColors : usa >
+MenuPrincipal ..> ErrorHandler : usa >
+
+DataInitializer ..> AutorRepository : usa >
+DataInitializer ..> LibroRepository : usa >
+DataInitializer ..> Autor : usa >
+DataInitializer ..> Libro : usa >
+DataInitializer ..> Idioma : usa >
+
+class ProyectoLiteraturaApplication {
+  -MenuPrincipal menuPrincipal
+  +main(String[]): void
+  +run(String...): void
+}
+
+ProyectoLiteraturaApplication --> MenuPrincipal : usa >
+ProyectoLiteraturaApplication ..> ConsoleColors : usa >
+ProyectoLiteraturaApplication ..> LoadingBar : usa >
+
+@enduml

@@ -48,7 +48,7 @@ El proyecto incluye un diagrama PlantUML (`diagrama.puml`) que muestra la estruc
    ```properties
    spring.datasource.url=jdbc:postgresql://localhost:5432/alura_literatura
    spring.datasource.username=postgres
-   spring.datasource.password=XXXX
+   spring.datasource.password=XXXX   # Cambia esto por tu contraseña
    ```
 
 ### Ejecución
